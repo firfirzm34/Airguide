@@ -1,8 +1,4 @@
 import { useState } from "react";
-import { Card, CardContent } from "@/components/ui/card";
-import { Button } from "@/components/ui/button";
-import { Input } from "@/components/ui/input";
-import { Checkbox } from "@/components/ui/checkbox";
 
 const interestsList = ["Food", "Nature", "Art", "Music", "History", "Nightlife"];
 
@@ -18,11 +14,10 @@ export default function Home() {
 
   const handleInterestChange = (interest) => {
     setTraveler((prev) => {
-      const alreadySelected = prev.interests.includes(interest);
-      const updatedInterests = alreadySelected
+      const updated = prev.interests.includes(interest)
         ? prev.interests.filter((i) => i !== interest)
         : [...prev.interests, interest];
-      return { ...prev, interests: updatedInterests };
+      return { ...prev, interests: updated };
     });
   };
 
@@ -34,47 +29,48 @@ export default function Home() {
   };
 
   return (
-    <div className="p-6 max-w-xl mx-auto">
+    <main className="max-w-xl mx-auto p-6">
       <h1 className="text-2xl font-bold mb-4">Find a Local Travel Buddy</h1>
-      <Input
+      <input
+        className="border p-2 w-full mb-4"
         placeholder="Your Name"
         value={traveler.name}
         onChange={(e) => setTraveler({ ...traveler, name: e.target.value })}
-        className="mb-4"
       />
 
-      <div className="mb-4">
-        <p className="mb-2">Select Your Interests:</p>
-        <div className="grid grid-cols-2 gap-2">
-          {interestsList.map((interest) => (
-            <label key={interest} className="flex items-center space-x-2">
-              <Checkbox
-                checked={traveler.interests.includes(interest)}
-                onCheckedChange={() => handleInterestChange(interest)}
-              />
-              <span>{interest}</span>
-            </label>
-          ))}
-        </div>
+      <p className="mb-2">Select Your Interests:</p>
+      <div className="grid grid-cols-2 gap-2 mb-4">
+        {interestsList.map((interest) => (
+          <label key={interest} className="flex items-center space-x-2">
+            <input
+              type="checkbox"
+              checked={traveler.interests.includes(interest)}
+              onChange={() => handleInterestChange(interest)}
+            />
+            <span>{interest}</span>
+          </label>
+        ))}
       </div>
 
-      <Button onClick={findMatches} className="mb-6">Find Matches</Button>
+      <button
+        className="bg-blue-500 text-white px-4 py-2 rounded mb-6"
+        onClick={findMatches}
+      >
+        Find Matches
+      </button>
 
-      <div>
-        <h2 className="text-xl font-semibold mb-2">Matches:</h2>
-        {localMatches.length > 0 ? (
-          localMatches.map((local, index) => (
-            <Card key={index} className="mb-2">
-              <CardContent className="p-4">
-                <p><strong>{local.name}</strong></p>
-                <p className="text-sm text-gray-600">Interests: {local.interests.join(", ")}</p>
-              </CardContent>
-            </Card>
-          ))
-        ) : (
-          <p className="text-gray-500">No matches found yet.</p>
-        )}
-      </div>
-    </div>
+      <h2 className="text-xl font-semibold mb-2">Matches:</h2>
+      {localMatches.length > 0 ? (
+        localMatches.map((local, idx) => (
+          <div key={idx} className="border rounded p-4 mb-2">
+            <p><strong>{local.name}</strong></p>
+            <p className="text-sm text-gray-600">Interests: {local.interests.join(", ")}</p>
+          </div>
+        ))
+      ) : (
+        <p className="text-gray-500">No matches found yet.</p>
+      )}
+    </main>
   );
 }
+
